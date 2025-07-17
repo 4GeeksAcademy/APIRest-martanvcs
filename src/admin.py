@@ -11,7 +11,7 @@ class UserModelView(ModelView):
                    'last_name', 'subscription_date', 'is_active']
     column_searchable_list = ['email', 'first_name', 'last_name']
     column_filters = ['subscription_date', 'is_active']
-    form_excluded_columns = ['favorites']
+    form_excluded_columns = ['favorite_planets', 'favorite_characters']
 
 
 class CharacterModelView(ModelView):
@@ -24,11 +24,6 @@ class PlanetModelView(ModelView):
     column_list = ['id', 'name', 'climate', 'population', 'terrain']
     column_searchable_list = ['name']
     column_filters = ['climate']
-
-
-class FavoriteModelView(ModelView):
-    column_list = ['id', 'user_id', 'character_id', 'planet_id']
-    column_filters = ['user_id', 'character_id', 'planet_id']
 
 
 class FavoritePlanetModelView(ModelView):
@@ -48,11 +43,10 @@ def setup_admin(app):
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
     admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')
 
-    # Add your models here, for example this is how we add a the User model to the admin
+    # Add your models here, for example this is how we add the User model to the admin
     admin.add_view(UserModelView(User, db.session))
 
-    # You can duplicate that line to add mew models
-    # admin.add_view(ModelView(YourModelName, db.session))
+    # You can duplicate that line to add new models
     admin.add_view(CharacterModelView(Character, db.session))
     admin.add_view(PlanetModelView(Planet, db.session))
     admin.add_view(FavoritePlanetModelView(FavoritePlanet, db.session))

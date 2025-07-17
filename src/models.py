@@ -9,8 +9,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "user"
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(
-        String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -18,9 +17,11 @@ class User(db.Model):
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
     favorite_planets: Mapped[list["FavoritePlanet"]] = relationship(
-        "FavoritePlanet", back_populates="user")
+        "FavoritePlanet", back_populates="user"
+    )
     favorite_characters: Mapped[list["FavoriteCharacter"]] = relationship(
-        "FavoriteCharacter", back_populates="user")
+        "FavoriteCharacter", back_populates="user"
+    )
 
     def serialize(self):
         return {
@@ -29,7 +30,6 @@ class User(db.Model):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "subscription_date": self.subscription_date.isoformat()
-
         }
 
 
@@ -42,7 +42,8 @@ class Character(db.Model):
     eye_color: Mapped[str] = mapped_column(String(20))
 
     favorites: Mapped[list["FavoriteCharacter"]] = relationship(
-        "FavoriteCharacter", back_populates="character")
+        "FavoriteCharacter", back_populates="character"
+    )
 
     def serialize(self):
         return {
@@ -63,7 +64,8 @@ class Planet(db.Model):
     terrain: Mapped[str] = mapped_column(String(100))
 
     favorites: Mapped[list["FavoritePlanet"]] = relationship(
-        "FavoritePlanet", back_populates="planet")
+        "FavoritePlanet", back_populates="planet"
+    )
 
     def serialize(self):
         return {
@@ -79,13 +81,10 @@ class FavoritePlanet(db.Model):
     __tablename__ = "favorite_planet"
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    planet_id: Mapped[int] = mapped_column(
-        ForeignKey("planet.id"), nullable=False)
+    planet_id: Mapped[int] = mapped_column(ForeignKey("planet.id"), nullable=False)
 
-    user: Mapped["User"] = relationship(
-        "User", back_populates="favorite_planets")
-    planet: Mapped["Planet"] = relationship(
-        "Planet", back_populates="favorites")
+    user: Mapped["User"] = relationship("User", back_populates="favorite_planets")
+    planet: Mapped["Planet"] = relationship("Planet", back_populates="favorites")
 
     def serialize(self):
         return {
@@ -99,13 +98,10 @@ class FavoriteCharacter(db.Model):
     __tablename__ = "favorite_character"
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    character_id: Mapped[int] = mapped_column(
-        ForeignKey("people.id"), nullable=False)
+    character_id: Mapped[int] = mapped_column(ForeignKey("people.id"), nullable=False)
 
-    user: Mapped["User"] = relationship(
-        "User", back_populates="favorite_characters")
-    character: Mapped["Character"] = relationship(
-        "Character", back_populates="favorites")
+    user: Mapped["User"] = relationship("User", back_populates="favorite_characters")
+    character: Mapped["Character"] = relationship("Character", back_populates="favorites")
 
     def serialize(self):
         return {
